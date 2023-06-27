@@ -1,0 +1,41 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+
+<div class="container">
+    <h1 style="font-family: monospace;">Add Listing</h1>
+    <form action="{% url 'add_lists' %}" method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+
+            {{form.title}}
+
+
+        </div>
+        <div class="mb-3">
+
+            {{form.desc}}
+        </div>
+        <div class="mb-3">
+
+            {{form.image_url}}
+        </div>
+        <div class="mb-3">
+
+            {{form.bid}}
+        </div>
+        <select class="form-control" name="catagory">
+            <option>Select Category</option>
+            {% for item in cat %}
+            <option value="{{item.catagory_name|safe}}">{{item.catagory_name}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <button class="btn btn-primary" submit">Submit</button>
+
+    </form>
+
+</div>
+{% endblock body %}
