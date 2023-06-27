@@ -1,0 +1,78 @@
+{% extends "auctions/layout.html" %}
+{% block head %}
+<style>
+    .col-3 {
+        padding: 0;
+    }
+</style>
+
+{% endblock head %}
+{% block body %}
+
+<div class="container">
+    <div class="row justify-content-center" style="margin-top: 6rem;">
+        <div class="col-md-5">
+            <form action="{% url 'search' %}" method="post">
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search...">
+
+
+
+                    <select class="form-control" name="catagory">
+                        <option>Select Category</option>
+                        {% for item in cat %}
+                        <option value="{{item.catagory_name|safe}}">{{item.catagory_name}}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="input-group-append"> <button class="btn btn-primary col-auto "
+                            type="submit">Search</button></div>
+
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+<br><br><br>
+
+
+
+<div class="container">
+    <h1 style="font-family: monospace;">Active Listing</h1>
+    <div class="row">
+        {% for items in a_list %}
+
+        <div class="col" style="margin-top:10px;">
+            <div class="card" style="width: 15rem;">
+                <img src="{{items.image_url}}" class="card-img-top" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">{{items.title}}</h5>
+
+                    <p class="card-text">{{items.desc|slice:":50"}}...
+
+                    </p>
+
+
+                    <p class="card-text">₹{{items.bid.bid}}</p>
+
+
+
+                    <a href="{% url 'details' items.id %}" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
