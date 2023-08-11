@@ -1,0 +1,39 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+<div class="container-md">
+    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+        <div class=" container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}" style="font-family: monospace;">Auctions</a>
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">Your Listings</a>
+                </li>
+                <li class="nav-item">
+                    <div>
+                        <a class="nav-link" href="{% url 'mybids' %}">Your Bids</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div>
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+    <table class="table table-striped">
+        <tr>
+            <th>Id</th>
+            <th class="w-50">Title</th>
+        </tr>
+        {% for item in bookmarks %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><a href="{% url 'details' item.auction_id.pk %}">{{item.auction_id.title}}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock body %}

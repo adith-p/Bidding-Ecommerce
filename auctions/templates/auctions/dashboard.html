@@ -1,0 +1,68 @@
+{% include 'auctions/layout.html' %}
+{% block head %}
+<style>
+    a:visited {
+        color: black;
+    }
+
+    a {
+        color: black;
+    }
+</style>
+{% endblock head %}
+{% block body %}
+<br>
+<div class="container-md">
+    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+        <div class=" container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}" style="font-family: monospace;">Auctions</a>
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">Your Listings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'bookmarks' %}">Bookmarks</a>
+                </li>
+                <li class="nav-item">
+                    <div>
+                        <a class="nav-link" href="{% url 'mybids' %}">Your Bids</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div>
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+    <!-- <h2 style="text-align: center;font-family: monospace;font-weight:500">Your Listings</h2> -->
+
+    <table class="table table-striped">
+        <tr>
+            <th>Id</th>
+            <th class="w-50">Title</th>
+            <th>Published Date</th>
+            <th>Action</th>
+
+        </tr>
+        {% for item in list_items %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><a href="{% url 'details' item.pk %}">{{item.title}}</a></td>
+            <td>{{item.last_modified}}</td>
+            <td>
+                {% if item.is_active %}
+                <a href="{% url 'close' item.pk %}" class="btn btn-danger">Close Listing</a>
+                {% else %}
+                <a class="btn btn-success disabled">Listing Closed</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+
+
+    {% endblock body %}

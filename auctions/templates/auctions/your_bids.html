@@ -1,0 +1,60 @@
+{% extends 'auctions/layout.html' %}
+
+
+
+{% block body %}
+
+<div class="container-md">
+    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+        <div class=" container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}" style="font-family: monospace;">Profile</a>
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile' %}">Your Listings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'bookmarks' %}">Bookmarks</a>
+                </li>
+
+
+                <li class="nav-item">
+
+                    <div>
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+
+
+
+
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+    <br>
+    <table class="table table-striped">
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>bids</th>
+            <th>Bid Date</th>
+        </tr>
+        {% for item in bid_data %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+                {% if item.title %}
+                <a href="{% url 'details' item.auction_id %}">{{ item.title }}</a>
+                {% else %}
+                Auction Not Found
+                {% endif %}
+            </td>
+            <td>{{ item.bid }}</td>
+            <td>{{ item.bid_time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+
+{% endblock body %}

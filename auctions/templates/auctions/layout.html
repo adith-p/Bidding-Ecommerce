@@ -1,5 +1,7 @@
 {% load static %}
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,6 +18,15 @@
     <style>
         .nav-link {
             font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+
+        }
+
+        .username {
+            color: black;
+        }
+
+        table {
+            background-color: azure;
 
         }
     </style>
@@ -39,7 +50,19 @@
 
                 <li class="nav-item">
                     {% if request.user.is_authenticated %}
-                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    <div>
+
+                        <span style="padding-right:3px; padding-top: 7px; display:inline-block;">
+
+                            <img class="manImg" src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png"
+                                style="width: 25px;">
+                            <strong> <a href="{% url 'profile' %}"
+                                    style="color: black;">{{user.username}}</a></strong></img>
+
+                        </span>
+
+                    </div>
+
                     {% else %}
                     <a class="nav-link" href="{% url 'register' %}">Register</a>
                     {% endif %}
@@ -48,21 +71,31 @@
             </ul>
         </div>
     </nav>
+    <br>
 
     </ul>
 
-    <div style="margin:2rem">
-        {% if user.is_authenticated %}
-        <span style="padding-right:3px; padding-top: 3px; display:inline-block;">
 
-            <img class="manImg" src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png" style="width: 25px;">
-            <strong>{{user.username}}</strong></img>
+    {% if messages %}
+    {% for message in messages %}
+    <center>
+        <div style="max-width: 1000px;">
 
-        </span>
+            <div class=" alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
 
-        <hr>
-        {% endif %}
-    </div>
+
+
+                {{message}}
+
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="alert"
+                    aria-label="Close">&times;</button>
+
+            </div>
+            {% endfor %}
+
+            {% endif %}
+        </div>
+    </center>
 
     {% block body %}
     {% endblock %}

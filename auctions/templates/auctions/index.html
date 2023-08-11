@@ -1,4 +1,6 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
+{% load humanize %}
 {% block head %}
 <style>
     .col-3 {
@@ -16,7 +18,7 @@
                 {% csrf_token %}
 
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search...">
+                    <input type="text" class="form-control" placeholder="Search..." name="search_query">
 
 
 
@@ -41,30 +43,42 @@
 
 
 
-<div class="container">
+
+<div class="container ">
     <h1 style="font-family: monospace;">Active Listing</h1>
-    <div class="row">
+    <div class="row product-card">
         {% for items in a_list %}
+        <a href="{% url 'details' items.id %}">
+            <div class="col" style="margin-top:10px;">
+                <div class="card" style="width: 15rem;height :462px;">
+                    {% if items.image_url == "" %}
+                    <img src="{% static 'images/placeholder.png' %}" class="card-img-top" alt="">
 
-        <div class="col" style="margin-top:10px;">
-            <div class="card" style="width: 15rem;">
-                <img src="{{items.image_url}}" class="card-img-top" alt="">
-                <div class="card-body">
-                    <h5 class="card-title">{{items.title}}</h5>
+                    {% else %}
+                    <img src="{{items.image_url}}" class="card-img-top" alt="" style="height:238px; width:238px ">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{items.title}}</h5>
 
-                    <p class="card-text">{{items.desc|slice:":50"}}...
+                        <!-- <p class="card-text">{{items.desc|slice:":50"}}...
 
-                    </p>
+                    </p> -->
+
+                        <div>
+                            <p class="card-text">$
+                                {{ items.bid.bid|intcomma }}
+                            </p>
+                        </div>
 
 
-                    <p class="card-text">₹{{items.bid.bid}}</p>
 
 
-
-                    <a href="{% url 'details' items.id %}" class="btn btn-primary">Go somewhere</a>
+                        <!-- <a href="" class="btn btn-primary" style="margin-top:25px">More
+                            Details</a> -->
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
 
         {% endfor %}
 

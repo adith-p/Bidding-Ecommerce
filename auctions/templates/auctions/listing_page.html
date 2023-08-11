@@ -1,63 +1,178 @@
-{% load static %}
 {% include 'auctions/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block head %}
+<style>
+    .container {
+
+        outline: solid 2px black;
+        box-shadow: 2px;
+        display: grid;
+        grid-template-columns: 40% auto;
+        box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2), 0 8px 24px 0 rgba(0, 0, 0, 0.19);
+        background-color: azure;
+
+
+    }
+
+    .product-image {
+
+        height: 450px;
+        width: 350px;
+    }
+
+    #p-image {
+        height: 320px;
+        width: 300px;
+        margin: 28px;
+
+    }
+
+    .product-details {
+
+        height: 384px;
+        width: 590px;
+    }
+
+    .product-title {
+        font-family: opensans-h, open sans, "sans-serif";
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 24px;
+        margin: 20px 10px 9px 5px;
+        word-wrap: break-word;
+
+
+    }
+
+    .product-desc {
+        font-family: opensans-r;
+        font-weight: 400;
+        color: #646464;
+        font-size: 15px;
+        line-height: 20px;
+        margin: 20px 10px 9px 5px;
+        max-height: 120px;
+        overflow: auto;
+
+    }
+
+    .bid-details {
+        color: #363636;
+        font-family: opensans-h, open sans, sans-serif;
+
+    }
+
+    .banner {
+        width: 60%;
+        margin: auto;
+    }
+</style>
+
+{% endblock head %}
+
 
 {% block body %}
-<div class=" row justify-content-center">
-    <div class="card mb-3" style="max-width: 1000px;">
-        <div class="row g-0">
-            <div class="col-md-4">
-                <img src="{{list_item.image_url}}" class="img-fluid rounded-start" alt="{{list_item.title}}">
-            </div>
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h5 class="card-title">{{list_item.title}}</h5>
-                    <p class="card-text">{{list_item.desc}}</p>
-                    <strong>
-                        <p class="card-text">₹ {{list_item.bid.bid}}</p>
-                    </strong>
-                    <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
-                    {% if request.user.is_authenticated %}
-                    <!-- Button trigger modal -->
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        Bid Now
-                    </button>
-                    {% endif %}
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Bid Now</h5>
-                                    <button type="button" class="btn" data-bs-dismiss="modal"
-                                        aria-label="Close">&times;</button>
-                                </div>
-                                <form action="{% url 'bid' list_item.pk %}" method="post">
-                                    {% csrf_token %}
-                                    <div class="modal-body">
-                                        <input type="number" name="number" id="number">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary"><img
-                                                src="{% static 'auctions/bid.png' %}" class="img-fluid rounded-top"
-                                                alt="" style="width: 25px;"></button>
-                                    </div>
-                                </form>
-                            </div>
+
+<div class="banner">{% if not list_item.is_active %}
+    {% if list_item.bid.user.username == list_item.owner.username %}
+    <div class="alert alert-danger" role="alert">
+        Item was not sold
+    </div>
+    {% else %}
+    <div class="alert alert-success" role="alert">
+        {% if list_item.bid.user.username == request.user.username %}
+        Congrats <strong>you</strong> won the item for the final bid of
+        ${{ list_item.bid.bid|intcomma }}
+
+        {% else %}
+        Item Sold to user <Strong>{{list_item.bid.user.username}}</Strong> for the final bid of
+        ${{ list_item.bid.bid|intcomma }}
+
+        {% endif %}
+
+    </div>
+    {% endif %}
+    {% endif %}
+</div>
+
+<div class="container">
+
+
+    <div class="product-image">
+        {% if list_item.image_url == "" %}
+        <img src="{% static 'images/placeholder.png' %}" id="p-image" alt="">
+
+        {% else %}
+        <img src="{{list_item.image_url}}" id="p-image" alt="">
+        {% endif %}
+    </div>
+
+    <div class="product-details">
+
+        <div class="product-title">{{list_item.title}}</div>
+        <div class="product-desc">{{list_item.desc}}</div>
+        <hr>
+        <div class="bid-details">
+            <h3>${{list_item.bid.bid|intcomma}}</h3>
+            <h5>{{list_item.bid.bid_time}}</h5>
+            <br>
+            {% if request.user.is_authenticated %}
+            <!-- Button trigger modal -->
+            {% if request.user != list_item.owner %}
+
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Bid Now
+            </button>
+            {% else %}
+            <button type="button" class="btn btn-primary" disabled>
+                Bid Now
+            </button>
+            {% endif %}
+            {% if is_bookmarked %}
+            <a href="{% url 'rmBookmark' list_item.pk %} " class="btn btn-danger">remove from Watchlist</a>
+
+
+            {% else %}
+            <a href="{% url 'addBookmark' list_item.pk %}" class="btn btn-success">Add To Watchlist</a>
+
+
+
+            {% endif %}
+            {% else %}
+            <button type="button" class="btn btn-primary" disabled>
+                Bid Now
+            </button>
+
+            {% endif %}
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Bid Now</h5>
+                            <button type="button" class="btn" data-bs-dismiss="modal"
+                                aria-label="Close">&times;</button>
                         </div>
-
+                        <form action="{% url 'bid' list_item.pk %}" method="post">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <input type="number" name="number" id="number" min="{{list_item.bid.bid}}" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary"><img src="{% static 'auctions/bid.png' %}"
+                                        class="img-fluid rounded-top" alt="" style="width: 25px;"></button>
+                            </div>
+                        </form>
                     </div>
-
-
-
-
-
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
 {% endblock body %}
